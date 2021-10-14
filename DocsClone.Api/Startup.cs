@@ -1,11 +1,18 @@
+using DocsClone.Domain.Interfaces;
 using DocsClone.EfCore.Contexts;
+using DocsClone.EfCore.Repositories;
+using DocsClone.EfCore.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Text;
 
 namespace DocsClone.Api
 {
@@ -26,7 +33,53 @@ namespace DocsClone.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DocsClone.Api", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Scheme = "bearer",
+                    Description = "Please insert JWT token into field"
+                });
+
+                c.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement{
+                    {
+                            new OpenApiSecurityScheme{
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme, 
+                                    Id = "Bearer" 
+                                } 
+                            }, 
+                            new string[] { } 
+                        } 
+                    });
             });
+            #region Repositories
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRevisionRepository, RevisionRepository>();
+            services.AddTransient<IDocumentRepository, DocumentRepository>();
+            services.AddTransient<IDetailRepository, DetailRepository>();
+            #endregion
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            var secret = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
+           services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(secret)
+                    };
+                }); 
 
             services.AddDbContext<ApplicationContext>(options =>
             options.UseSqlServer( Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName))
@@ -47,6 +100,7 @@ namespace DocsClone.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
