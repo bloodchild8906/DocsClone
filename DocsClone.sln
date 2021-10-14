@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocsClone.Domain", "DocsClo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocsClone.EfCore", "DocsClone.EfCore\DocsClone.EfCore.csproj", "{D5C8AC89-6EDD-414D-88D9-B54A1A2E570B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocsClone.Dto", "DocsClone.Dto\DocsClone.Dto.csproj", "{7780D472-27A0-464F-BBE5-B527009A28ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D5C8AC89-6EDD-414D-88D9-B54A1A2E570B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5C8AC89-6EDD-414D-88D9-B54A1A2E570B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5C8AC89-6EDD-414D-88D9-B54A1A2E570B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7780D472-27A0-464F-BBE5-B527009A28ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7780D472-27A0-464F-BBE5-B527009A28ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7780D472-27A0-464F-BBE5-B527009A28ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7780D472-27A0-464F-BBE5-B527009A28ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
