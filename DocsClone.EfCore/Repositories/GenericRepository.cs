@@ -26,5 +26,11 @@ namespace DocsClone.EfCore.Repositories
         public void Remove(T entity) => _context.Set<T>().Remove(entity);
         public void RemoveRange(IEnumerable<T> entities) => _context.Set<T>().RemoveRange(entities);
 
+        public T Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+            return entity;
+        }
+
     }
 }
