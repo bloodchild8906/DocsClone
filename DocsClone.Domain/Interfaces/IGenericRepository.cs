@@ -13,6 +13,7 @@ namespace DocsClone.Domain.Interfaces
         List<T> GetAll();
         List<T> Find(Expression<Func<T, bool>> expression);
         T Add(T entity);
+        T Update(T entity);
         void AddRange(IEnumerable<T> entities);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);

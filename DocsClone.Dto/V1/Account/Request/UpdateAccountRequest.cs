@@ -8,8 +8,6 @@ namespace DocsClone.Dto.V1.Login.Request
 {
     public class UpdateAccountRequest
     {
-        public string Username { get; set; }
-
         public string Password { get; set; }
 
         public string Name { get; set; }
@@ -18,9 +16,9 @@ namespace DocsClone.Dto.V1.Login.Request
 
         public string Email { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public string PrimaryContactNumber { get; set; }
-        public int Timezone { get; set; }
+        public int? Timezone { get; set; }
     }
 }

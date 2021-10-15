@@ -3,11 +3,13 @@ using DocsClone.Domain.Interfaces;
 using DocsClone.Dto.V1.Account.Request;
 using DocsClone.Dto.V1.Account.Response;
 using DocsClone.Dto.V1.Login.Request;
+using DocsClone.Dto.V1.Login.Response;
 using DocsClone.EfCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -31,7 +33,6 @@ namespace DocsClone.Api.Controllers
 
 
         [Route("Login")]
-
         [HttpPost]
         public ActionResult Login([FromBody] LoginRequest loginRequest)
         {
@@ -63,22 +64,48 @@ namespace DocsClone.Api.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [Route("Update")]
+        [HttpPost]
         [Authorize]
-        public ActionResult Users()
+        public ActionResult Update([FromBody] UpdateAccountRequest updateRequest)
         {
-            return Ok(_unitOfWork.Users.GetAll());
+            var currentUser = HttpContext.User;
+            var tmpUser = _unitOfWork.Users.Find(user => user.Username == currentUser.Claims.FirstOrDefault(c => c.Type == "User").Value).FirstOrDefault();
+            if (tmpUser == null)
+                return BadRequest(new UpdateAccountResponse() { Message = "Cannot get the user", StatusCode = 200 });
+            var tmpDetail = _unitOfWork.Details.Find(detail => detail.User == tmpUser).FirstOrDefault();
+            tmpUser.Password = updateRequest.Password.CreateMD5Hash()??tmpUser.Password;
+            tmpDetail.Name = updateRequest.Name??tmpDetail.Name;
+            tmpDetail.PrimaryContactNumber = updateRequest.PrimaryContactNumber??tmpDetail.PrimaryContactNumber;
+            tmpDetail.Surname = updateRequest.Surname??tmpDetail.Surname;
+            tmpDetail.User = tmpUser??tmpDetail.User;
+            tmpDetail.ModifiedWithTimezone = updateRequest.Timezone ?? tmpDetail.ModifiedWithTimezone;
+            tmpDetail.DateModified = DateTime.Now;
+            tmpDetail.Email = updateRequest.Email??tmpDetail.Email;
+            tmpDetail.DateOfBirth = updateRequest.DateOfBirth ?? tmpDetail.DateOfBirth;
+            _unitOfWork.Users.Update(tmpUser);
+            _unitOfWork.Details.Update(tmpDetail);
+            _unitOfWork.Complete();
+            return Ok(new UpdateAccountResponse() { Message = "Update Successful", StatusCode = 200 });
         }
 
-        private string GenerateJSONWebToken(User userInfo)
+
+
+        private string GenerateJSONWebToken(User userEntity)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[] {
+                new Claim("User",userEntity.Username)
+            };
+
             var token = new JwtSecurityToken(Configuration["Jwt:Issuer"],
-              Configuration["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
+                Configuration["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddMinutes(120),
+                signingCredentials: credentials);
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
