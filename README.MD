@@ -12,9 +12,15 @@
 ---
 
 **this application uses swagger for easy api exploration**
-![swagger](https://raw.githubusercontent.com/bloodchild8906/DocsClone/feature/Documentation_and_instructions/ApiImageDocs/register.png?token=AGOURTNCH5XPTTS6VIWG7ZDBOTPWM)
+![swagger](https://raw.githubusercontent.com/bloodchild8906/DocsClone/feature/Documentation_and_instructions/ApiImageDocs/Swagger.png?token=AGOURTJOFYLN6MQE4MYBEYLBOTRHI)
 
 ## Account
+
+***Auth***
+**Type:Jwt**
+```
+-H  "Authorization: Bearer {Token Obtained from login}"
+```
 
 ### Register a User
 Requires Auth:false
@@ -58,46 +64,58 @@ Requires Auth:true
 ## Document
 
 ### List
-Requires Auth:true
+Requires Auth:true<br>
 
-```
+***Url: /api/Document/List***<br>
 
-```
+Gets a list of all documents that user has
+
 
 ### GetDocumentData
-Requires Auth:true
+Requires Auth:true<br>
 
-```
+***/api/Document/GetDocumentData?documentId=id***<br>
+gets the document data for the a document with the specified id
 
-```
 
 ### Create
-Requires Auth:true
-
+Requires Auth:true<br>
+***Url: /api/Document/Create***<br>
+creates a document for the logged in user
 ```
-
+{
+  "name": "string",
+  "accessLevel": 0,
+  "documentVersion": "string",
+  "documentData": "string",
+  "timeZone": 0
+}
 ```
 
 ### GiveAccess
-Requires Auth:true
-
-```
-
-```
+Requires Auth:true<br>
+***Url: /api/Document/GiveAccess?email=111&documentId=1&accessLevel=0***<br>
+give a user access to a document by using thier email with access level 0,1,2<br>
+0: Read Only<br>
+1: Write( also enables reading)<br>
+2: Read/Write
 
 ### Save
-Requires Auth:true
+Requires Auth:true<br>
+***Url: /api/Document/Save?documentId=1***<br>
+save data to the revision if the revision string is the same as the current but creates a new revision with the data if the revision version is different
 
 ```
-
+{
+  "revisionVersion": "string",
+  "documentData": "string",
+  "timeZone": 0
+}
 ```
 
 ### Revert
-Requires Auth:true
-
-```
-
-```
+Requires Auth:true<br>
+***Url: /api/Document/Revert?documentId=1&revisionVersion=v1***<br>
 
 
 
