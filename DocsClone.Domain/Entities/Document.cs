@@ -1,21 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DocsClone.Domain.Entities
 {
-    [Table("documents")]
     public class Document
     {
-        [Column("document_id")]
         public long Id { get; set; }
-        [Column("users")]
-        public List<User> User { get; set; }
-        [Column("revisions")]
-        public List<Revision> Revisions { get; set; }
-        [Column("current_revision")]
+        public string Name { get; set; }
+        public virtual List<Revision> Revisions { get; set; } = new List<Revision>(); 
         public string CurrentVersion { get; set; }
-        [Column("access_level")]
-        public int AccessLevel { get; set; }
-
+        public virtual List<DocumentPermission> Permissions { get; set; } = new List<DocumentPermission>();
+        public virtual List<User> Users { get; set; } = new List<User>();
     }
 }

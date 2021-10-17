@@ -2,7 +2,7 @@
 
 namespace DocsClone.EfCore.Migrations
 {
-    public partial class tablefixesv21 : Migration
+    public partial class tablefixv3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

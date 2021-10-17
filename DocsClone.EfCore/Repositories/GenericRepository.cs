@@ -20,8 +20,8 @@ namespace DocsClone.EfCore.Repositories
         }
 
         public void AddRange(IEnumerable<T> entities) => _context.Set<T>().AddRange(entities);
-        public List<T> Find(Expression<Func<T, bool>> expression) => _context.Set<T>().Where(expression).ToList();
-        public List<T> GetAll() => _context.Set<T>().ToList();
+        public IEnumerable<T> Find(Expression<Func<T, bool>> expression) => _context.Set<T>().Where(expression).ToList();
+        public IEnumerable<T> GetAll() => _context.Set<T>().ToList();
         public T GetById(int id) => _context.Set<T>().Find(id);
         public void Remove(T entity) => _context.Set<T>().Remove(entity);
         public void RemoveRange(IEnumerable<T> entities) => _context.Set<T>().RemoveRange(entities);

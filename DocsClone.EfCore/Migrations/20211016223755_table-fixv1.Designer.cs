@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocsClone.EfCore.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211015003400_table-fixesv2")]
-    partial class tablefixesv2
+    [Migration("20211016223755_table-fixv1")]
+    partial class tablefixv1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,51 +26,36 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("detail_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CreatedWithTimezone")
-                        .HasColumnType("int")
-                        .HasColumnName("created_with_timezone");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("date_created");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateModified")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("date_modified");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("date_of_birth");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("email");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ModifiedWithTimezone")
-                        .HasColumnType("int")
-                        .HasColumnName("modified_with_timezone");
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrimaryContactNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("primary_contact_number");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("surname");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Details");
                 });
@@ -80,20 +65,20 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("document_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AccessLevel")
-                        .HasColumnType("int")
-                        .HasColumnName("access_level");
+                        .HasColumnType("int");
 
                     b.Property<string>("CurrentVersion")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("current_revision");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("documents");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("DocsClone.Domain.Entities.Revision", b =>
@@ -101,23 +86,19 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("revision_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long?>("CreatedById")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_on");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CreatedWithTimezone")
-                        .HasColumnType("int")
-                        .HasColumnName("created_with_timezone");
+                        .HasColumnType("int");
 
                     b.Property<string>("DocumentData")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("document_data");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("DocumentId")
                         .HasColumnType("bigint");
@@ -126,23 +107,19 @@ namespace DocsClone.EfCore.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("DocumentVersion")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("document_version");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Modifications")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("modifications");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ModifiedById")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("modified_on");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ModifiedWithTimezone")
-                        .HasColumnType("int")
-                        .HasColumnName("modified_with_timezone");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -154,7 +131,7 @@ namespace DocsClone.EfCore.Migrations
 
                     b.HasIndex("ModifiedById");
 
-                    b.ToTable("revisions");
+                    b.ToTable("Revisions");
                 });
 
             modelBuilder.Entity("DocsClone.Domain.Entities.User", b =>
@@ -162,34 +139,37 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("user_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("DocumentId")
+                    b.Property<long?>("DetailId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("password");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("username");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentId");
+                    b.HasIndex("DetailId");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DocsClone.Domain.Entities.Detail", b =>
+            modelBuilder.Entity("DocumentUser", b =>
                 {
-                    b.HasOne("DocsClone.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.Property<long>("DocumentsId")
+                        .HasColumnType("bigint");
 
-                    b.Navigation("User");
+                    b.Property<long>("UsersId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("DocumentsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("DocumentUser");
                 });
 
             modelBuilder.Entity("DocsClone.Domain.Entities.Revision", b =>
@@ -198,7 +178,7 @@ namespace DocsClone.EfCore.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("DocsClone.Domain.Entities.Document", "Document")
+                    b.HasOne("DocsClone.Domain.Entities.Document", null)
                         .WithMany("Revisions")
                         .HasForeignKey("DocumentId");
 
@@ -212,8 +192,6 @@ namespace DocsClone.EfCore.Migrations
 
                     b.Navigation("CreatedBy");
 
-                    b.Navigation("Document");
-
                     b.Navigation("DocumentOwner");
 
                     b.Navigation("ModifiedBy");
@@ -221,16 +199,31 @@ namespace DocsClone.EfCore.Migrations
 
             modelBuilder.Entity("DocsClone.Domain.Entities.User", b =>
                 {
+                    b.HasOne("DocsClone.Domain.Entities.Detail", "Detail")
+                        .WithMany()
+                        .HasForeignKey("DetailId");
+
+                    b.Navigation("Detail");
+                });
+
+            modelBuilder.Entity("DocumentUser", b =>
+                {
                     b.HasOne("DocsClone.Domain.Entities.Document", null)
-                        .WithMany("User")
-                        .HasForeignKey("DocumentId");
+                        .WithMany()
+                        .HasForeignKey("DocumentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocsClone.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DocsClone.Domain.Entities.Document", b =>
                 {
                     b.Navigation("Revisions");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

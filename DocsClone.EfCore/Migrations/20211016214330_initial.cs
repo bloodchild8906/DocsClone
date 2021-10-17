@@ -3,31 +3,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DocsClone.EfCore.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Details",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -41,31 +26,63 @@ namespace DocsClone.EfCore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Details", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Details_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Projects",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    Revisions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CurrentVersion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccessLevel = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DetailId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Projects_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Users_Details_DetailId",
+                        column: x => x.DetailId,
+                        principalTable: "Details",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DocumentUser",
+                columns: table => new
+                {
+                    DocumentsId = table.Column<long>(type: "bigint", nullable: false),
+                    UsersId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocumentUser", x => new { x.DocumentsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_DocumentUser_Documents_DocumentsId",
+                        column: x => x.DocumentsId,
+                        principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DocumentUser_Users_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -77,25 +94,25 @@ namespace DocsClone.EfCore.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DocumentId = table.Column<long>(type: "bigint", nullable: true),
                     DocumentVersion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocumentData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    Modifications = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    DocumentData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Modifications = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DocumentOwnerId = table.Column<long>(type: "bigint", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedWithTimezone = table.Column<int>(type: "int", nullable: false),
                     CreatedById = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedWithTimezone = table.Column<int>(type: "int", nullable: false),
-                    ModifiedById = table.Column<long>(type: "bigint", nullable: true)
+                    ModifiedById = table.Column<long>(type: "bigint", nullable: true),
+                    DocumentId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Revisions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Revisions_Projects_DocumentId",
+                        name: "FK_Revisions_Documents_DocumentId",
                         column: x => x.DocumentId,
-                        principalTable: "Projects",
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -119,14 +136,9 @@ namespace DocsClone.EfCore.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Details_UserId",
-                table: "Details",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_UserId",
-                table: "Projects",
-                column: "UserId");
+                name: "IX_DocumentUser_UsersId",
+                table: "DocumentUser",
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Revisions_CreatedById",
@@ -147,21 +159,29 @@ namespace DocsClone.EfCore.Migrations
                 name: "IX_Revisions_ModifiedById",
                 table: "Revisions",
                 column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_DetailId",
+                table: "Users",
+                column: "DetailId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Details");
+                name: "DocumentUser");
 
             migrationBuilder.DropTable(
                 name: "Revisions");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Details");
         }
     }
 }
