@@ -1,3 +1,4 @@
+using DocsClone.Api.SwaggerCustom;
 using DocsClone.Domain.Interfaces;
 using DocsClone.EfCore.Contexts;
 using DocsClone.EfCore.Repositories;
@@ -12,7 +13,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace DocsClone.Api
 {
@@ -29,33 +33,37 @@ namespace DocsClone.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+              
+            #region swagger
             services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DocsClone.Api", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Type = SecuritySchemeType.Http,
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Scheme = "bearer",
-                    Description = "Please insert JWT token into field"
-                });
-
-                c.AddSecurityRequirement(
-                    new OpenApiSecurityRequirement{
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "DocsClone.Api", Version = "v1" });
+                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
-                            new OpenApiSecurityScheme{
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme, 
-                                    Id = "Bearer" 
-                                } 
-                            }, 
-                            new string[] { } 
-                        } 
+                        Type = SecuritySchemeType.Http,
+                        BearerFormat = "JWT",
+                        In = ParameterLocation.Header,
+                        Scheme = "bearer",
+                        Description = "Please insert JWT token into field"
                     });
-            });
+
+                    c.AddSecurityRequirement( 
+                        new OpenApiSecurityRequirement{ 
+                            { 
+                                new OpenApiSecurityScheme{ 
+                                    Reference = new OpenApiReference { 
+                                        Type = ReferenceType.SecurityScheme, 
+                                        Id = "Bearer" 
+                                    } 
+                                }, 
+                                new string[] { }
+                            } 
+                        });
+                    c.OperationFilter<SwaggerResponseMimeTypeOperationFilter>();
+                });
+            #endregion
+
             #region Repositories
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IUserRepository, UserRepository>();
@@ -63,27 +71,35 @@ namespace DocsClone.Api
             services.AddTransient<IDocumentRepository, DocumentRepository>();
             services.AddTransient<IDetailRepository, DetailRepository>();
             #endregion
+
+            #region Unit of work
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            #endregion
 
+            #region JwtConfig
             var secret = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
-           services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(secret)
-                    };
-                }); 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                 .AddJwtBearer(options =>
+                 {
+                     options.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidateIssuer = true,
+                         ValidateAudience = true,
+                         ValidateLifetime = true,
+                         ValidateIssuerSigningKey = true,
+                         ValidIssuer = Configuration["Jwt:Issuer"],
+                         ValidAudience = Configuration["Jwt:Issuer"],
+                         IssuerSigningKey = new SymmetricSecurityKey(secret)
+                     };
+                 });
 
+            #endregion
+
+            #region Database
             services.AddDbContext<ApplicationContext>(options =>
-            options.UseSqlServer( Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName))
-            );
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName))
+                ); 
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

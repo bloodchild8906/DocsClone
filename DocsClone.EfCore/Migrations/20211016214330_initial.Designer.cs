@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocsClone.EfCore.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211014020930_Initial")]
-    partial class Initial
+    [Migration("20211016214330_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,12 +55,7 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<string>("Surname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Details");
                 });
@@ -78,17 +73,12 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<string>("CurrentVersion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Revisions")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Projects");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("DocsClone.Domain.Entities.Revision", b =>
@@ -107,8 +97,8 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<int>("CreatedWithTimezone")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("DocumentData")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("DocumentData")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("DocumentId")
                         .HasColumnType("bigint");
@@ -119,8 +109,8 @@ namespace DocsClone.EfCore.Migrations
                     b.Property<string>("DocumentVersion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Modifications")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Modifications")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ModifiedById")
                         .HasColumnType("bigint");
@@ -151,6 +141,9 @@ namespace DocsClone.EfCore.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("DetailId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -159,27 +152,24 @@ namespace DocsClone.EfCore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DetailId");
+
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DocsClone.Domain.Entities.Detail", b =>
+            modelBuilder.Entity("DocumentUser", b =>
                 {
-                    b.HasOne("DocsClone.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.Property<long>("DocumentsId")
+                        .HasColumnType("bigint");
 
-                    b.Navigation("User");
-                });
+                    b.Property<long>("UsersId")
+                        .HasColumnType("bigint");
 
-            modelBuilder.Entity("DocsClone.Domain.Entities.Document", b =>
-                {
-                    b.HasOne("DocsClone.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasKey("DocumentsId", "UsersId");
 
-                    b.Navigation("User");
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("DocumentUser");
                 });
 
             modelBuilder.Entity("DocsClone.Domain.Entities.Revision", b =>
@@ -189,7 +179,7 @@ namespace DocsClone.EfCore.Migrations
                         .HasForeignKey("CreatedById");
 
                     b.HasOne("DocsClone.Domain.Entities.Document", "Document")
-                        .WithMany()
+                        .WithMany("Revisions")
                         .HasForeignKey("DocumentId");
 
                     b.HasOne("DocsClone.Domain.Entities.User", "DocumentOwner")
@@ -207,6 +197,35 @@ namespace DocsClone.EfCore.Migrations
                     b.Navigation("DocumentOwner");
 
                     b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("DocsClone.Domain.Entities.User", b =>
+                {
+                    b.HasOne("DocsClone.Domain.Entities.Detail", "Detail")
+                        .WithMany()
+                        .HasForeignKey("DetailId");
+
+                    b.Navigation("Detail");
+                });
+
+            modelBuilder.Entity("DocumentUser", b =>
+                {
+                    b.HasOne("DocsClone.Domain.Entities.Document", null)
+                        .WithMany()
+                        .HasForeignKey("DocumentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocsClone.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DocsClone.Domain.Entities.Document", b =>
+                {
+                    b.Navigation("Revisions");
                 });
 #pragma warning restore 612, 618
         }

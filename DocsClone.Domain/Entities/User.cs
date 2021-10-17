@@ -1,18 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DocsClone.Domain.Entities
 {
-    [Table("users")]
     public class User
     {
-        [Column("user_id")]
         public long Id { get; set; }
 
-        [Column("username")]
         public string Username { get; set; }
 
-        [Column("password")]
         public string Password { get; set; }
+        public virtual List<Document> Documents { get; set; } = new List<Document>();
+
+        public virtual Detail Detail { get; set; }
 
     }
 }
