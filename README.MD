@@ -12,7 +12,7 @@
 ---
 
 **this application uses swagger for easy api exploration**
-![swagger](https://raw.githubusercontent.com/bloodchild8906/DocsClone/feature/Documentation_and_instructions/ApiImageDocs/Swagger.png?token=AGOURTJOFYLN6MQE4MYBEYLBOTRHI)
+![swagger](https://raw.githubusercontent.com/bloodchild8906/DocsClone/master/ApiImageDocs/Swagger.png?token=AGOURTOQ2QSYU2PYHAAHK5DBOTVWW)
 
 ## Account
 
