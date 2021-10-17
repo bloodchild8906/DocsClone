@@ -48,7 +48,7 @@ namespace DocsClone.Api.Controllers
 
         [Route("Register")]
         [HttpPost]
-        [SwaggerResponseMimeType((int)HttpStatusCode.OK, typeof(RegisterResponse), MediaTypeNames.Application.Json, Description = "Login response with a token")]
+        [SwaggerResponseMimeType((int)HttpStatusCode.OK, typeof(RegisterResponse), MediaTypeNames.Application.Json)]
         public ActionResult Register([FromBody] RegisterRequest registerRequest)
         {
             var detail=_unitOfWork.Details.Add(
@@ -71,8 +71,8 @@ namespace DocsClone.Api.Controllers
         [Route("Update")]
         [HttpPut]
         [Authorize]
-        [SwaggerResponseMimeType((int)HttpStatusCode.OK, typeof(UpdateAccountResponse), MediaTypeNames.Application.Json, Description = "Login response with a token")]
-        [SwaggerResponseMimeType((int)HttpStatusCode.BadRequest, typeof(UpdateAccountResponse), MediaTypeNames.Application.Json, Description = "Login response with a token")]
+        [SwaggerResponseMimeType((int)HttpStatusCode.OK, typeof(UpdateAccountResponse), MediaTypeNames.Application.Json)]
+        [SwaggerResponseMimeType((int)HttpStatusCode.BadRequest, typeof(UpdateAccountResponse), MediaTypeNames.Application.Json)]
         public ActionResult Update([FromBody] UpdateAccountRequest updateRequest)
         {
             var currentUser = HttpContext.User;

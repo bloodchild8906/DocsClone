@@ -5,11 +5,16 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocsClone.Api", "DocsClone.Api\DocsClone.Api.csproj", "{7B07620D-30B5-40A2-884A-87E6F69F8D9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocsClone.Domain", "DocsClone.Domain\DocsClone.Domain.csproj", "{950152C5-9C35-4EC6-BB3B-BA2FCAA2239E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocsClone.Domain", "DocsClone.Domain\DocsClone.Domain.csproj", "{950152C5-9C35-4EC6-BB3B-BA2FCAA2239E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocsClone.EfCore", "DocsClone.EfCore\DocsClone.EfCore.csproj", "{D5C8AC89-6EDD-414D-88D9-B54A1A2E570B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocsClone.EfCore", "DocsClone.EfCore\DocsClone.EfCore.csproj", "{D5C8AC89-6EDD-414D-88D9-B54A1A2E570B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocsClone.Dto", "DocsClone.Dto\DocsClone.Dto.csproj", "{7780D472-27A0-464F-BBE5-B527009A28ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocsClone.Dto", "DocsClone.Dto\DocsClone.Dto.csproj", "{7780D472-27A0-464F-BBE5-B527009A28ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DD9F4594-C705-4E8E-8A90-3AF1ED00F09C}"
+	ProjectSection(SolutionItems) = preProject
+		README.MD = README.MD
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
