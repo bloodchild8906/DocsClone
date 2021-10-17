@@ -76,7 +76,8 @@ namespace DocsClone.Api.Controllers
         public ActionResult Update([FromBody] UpdateAccountRequest updateRequest)
         {
             var currentUser = HttpContext.User;
-            var tmpUser = _unitOfWork.Users.Find(user => user.Username == currentUser.Claims.FirstOrDefault(c => c.Type == "User").Value).FirstOrDefault();
+            var c_usr = currentUser.Claims.FirstOrDefault(c => c.Type == "User").Value;
+            var tmpUser = _unitOfWork.Users.Find(user => user.Username ==c_usr).FirstOrDefault();
             if (tmpUser == null)
                 return BadRequest(new UpdateAccountResponse() { Message = "Cannot get the user", StatusCode = 200 });
             var tmpDetail = tmpUser.Detail;
